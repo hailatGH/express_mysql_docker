@@ -1,0 +1,35 @@
+version: "3"
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - db-data:/var/lib/mysql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hailatdev/express_mysql_docker:latest
+    container_name: express_mysql_docker_container
+    command: sh -c "npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: mydb
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+
+volumes:
+  src:
+  db-data:
